@@ -1,18 +1,19 @@
 // external
-import { useState } from "react";
 import styled from "styled-components";
+import SendDataMessage from "../hook/DataMessage";
 
 // internal
 import { useWhiteboardState, useWhiteboardDispatch } from "../provider/Provider";
 
 const toolbarItem = ["pen", "erase", "clear", "capture"] as const;
+type ToolbarItem = typeof toolbarItem[number];
 
 const WhiteboardToolbar = () => {
   const { tool, clear, capture } = useWhiteboardState();
   const WBDispatch = useWhiteboardDispatch();
 
-  const setWhiteboardToolbarState = (item: typeof toolbarItem[number]) => {
-    console.log("click item", item);
+  const setWhiteboardToolbarState = (item: ToolbarItem) => {
+    // console.log("click item", item);
 
     switch (item) {
       case "pen":
@@ -23,6 +24,7 @@ const WhiteboardToolbar = () => {
         return;
       case "clear":
         WBDispatch({ type: "clear", clear: clear ? false : true });
+        SendDataMessage("clear", true);
         return;
       case "capture":
         WBDispatch({ type: "capture", capture: capture ? false : true });
@@ -30,11 +32,11 @@ const WhiteboardToolbar = () => {
     }
   };
 
-  console.log(`current stateus: ${tool}, ${clear}, ${capture}`);
+  // console.log(`current stateus: ${tool}, ${clear}, ${capture}`);
 
   return (
     <ToolbarInner>
-      {toolbarItem.map((item: typeof toolbarItem[number], idx: number) => (
+      {toolbarItem.map((item: ToolbarItem, idx: number) => (
         <li key={idx} onClick={() => setWhiteboardToolbarState(item)}>
           {item}
         </li>

@@ -1,7 +1,7 @@
 import { WbStateType, WbActionType } from "../types/WbStateType";
 
 export const wbReducer = (state: WbStateType, action: WbActionType): WbStateType => {
-  console.log("store, action", action);
+  // console.log("store, action", action);
   switch (action.type) {
     case "tool":
       return { ...state, tool: action.tool };

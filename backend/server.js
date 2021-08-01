@@ -15,9 +15,13 @@ server.listen(4000, () => console.log("socket server 4000 start!"));
 const nsp = io.of("/wb");
 nsp.on("connection", (socket) => {
   // 접속한 클라이언트의 정보가 수신되면
-  socket.on("pos", function (data) {
-    // console.log(`data, ${data}`);
-    socket.broadcast.emit("pos", data);
+  socket.on("draw", (data) => {
+    socket.broadcast.emit("draw", data);
+  });
+
+  socket.on("clear", (data) => {
+    console.log(data);
+    socket.broadcast.emit("clear", true);
   });
 });
 
