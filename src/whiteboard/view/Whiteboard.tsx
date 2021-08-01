@@ -1,7 +1,11 @@
+// external
 import Konva from "konva";
 import io from "socket.io-client";
 import { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Line } from "react-konva";
+
+// internal
+import WhiteboardToolbar from "./WhiteboardToolbar";
 
 type LineType = { tool: string; points: [x: number, y: number] };
 
@@ -30,14 +34,23 @@ const Whiteboard = () => {
     lastLine.points = lastLine?.points.concat([point?.x, point?.y]);
 
     // replace last
-    lines.splice(lines.length - 1, 1, lastLine);
+    // lines.splice(lines.length - 1, 1, lastLine);
     setLines(lines.concat());
     linesRef.current = lines;
   };
 
   const handleMouseUp = () => {
     const lastLine: LineType = lines[lines.length - 1];
-    socket.emit("pos", lastLine);
+    console.log(`Limit size: ${JSON.stringify(Object.values(lastLine)).length}`);
+
+    if (JSON.stringify(Object.values(lastLine)).length < 600) {
+      console.log(`send to lines!!`);
+      socket.emit("pos", lastLine);
+    } else {
+      console.log(`not passed`);
+      isDrawing.current = false;
+      return;
+    }
 
     isDrawing.current = false;
   };
@@ -62,6 +75,7 @@ const Whiteboard = () => {
 
   return (
     <div>
+      <WhiteboardToolbar />
       <Stage
         style={{ border: "1px red solid" }}
         width={window.innerWidth}
