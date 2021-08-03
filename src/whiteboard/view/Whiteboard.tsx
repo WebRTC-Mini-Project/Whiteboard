@@ -11,12 +11,12 @@ import SendDataMessage from "../hook/DataMessage";
 import PencilCursor from "../../image/Pencil-Cursor.svg";
 import EraserCursor from "../../image/Eraser-Cursor.svg";
 
-type LineType = { tool: string; points: [x: number, y: number] };
+type LineType = { tool: string; color: string; fontWeight: number; points: [x: number, y: number] }; // todo .. color type 가져오기
 
 const socket = io("/wb");
 
 const Whiteboard = () => {
-  const { tool, clear, capture } = useWhiteboardState();
+  const { tool, capture, color, fontWeight } = useWhiteboardState();
   const WBDispatch = useWhiteboardDispatch();
 
   const [lines, setLines] = useState<any>([]);
@@ -28,7 +28,7 @@ const Whiteboard = () => {
   const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     isDrawing.current = true;
     const pos = e.target.getStage()?.getPointerPosition();
-    setLines([...lines, { tool, points: [pos?.x, pos?.y] }]);
+    setLines([...lines, { tool, color, fontWeight, points: [pos?.x, pos?.y] }]);
   };
 
   const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -83,6 +83,8 @@ const Whiteboard = () => {
         ...linesRef.current,
         {
           tool: data.tool,
+          fontWeight: data.fontWeight,
+          color: data.color,
           points: data.points,
         },
       ];
@@ -123,8 +125,8 @@ const Whiteboard = () => {
             <Line
               key={idx}
               points={line.points}
-              stroke="#df4b26"
-              strokeWidth={5}
+              stroke={line.color}
+              strokeWidth={line.fontWeight}
               tension={0.5}
               lineCap="round"
               globalCompositeOperation={line.tool === "erase" ? "destination-out" : "source-over"}
